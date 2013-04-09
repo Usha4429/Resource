@@ -1,0 +1,139 @@
+body {
+    background-color: #F1F1F1;
+    font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+    color: #363636;
+    text-align: center;
+}
+
+#container {
+    text-align: left;
+    margin: 0 auto;
+    padding: 0 20px 10px 20px;
+    border-top: 5px solid #000000;
+    border-left: 5px solid #8c8f91;
+    border-right: 5px solid #8c8f91;
+    border-bottom: 25px solid #8c8f91;
+    width: 865px; /* subtract 40px from banner width for padding */
+    background: #FFFFFF;
+    background-image: url(../img/headerbkg.png);
+    background-repeat: repeat-x;
+    padding-top: 30px;
+    box-shadow: 3px 3px 15px #d5d5d5;
+}
+a {
+    color: #4a5d75;
+}
+section {
+    clear: both;
+    float: left;
+    width: 500px;
+    margin: 20px;
+}
+h1 {
+    color: #243446;
+    font-size: 2.25em;
+    margin: 0 0 10px 0;
+}
+
+
+a:hover {
+   color: #369;
+   text-decoration: underline;
+}
+
+
+footer {
+    clear: both;
+    text-align: center;
+    color: #666666;
+    font-size: 0.85em;
+}
+
+/* Content styles */
+
+fieldset{
+   padding-left: 5px;
+   padding-right: 5px;
+   
+}
+
+span.invalid {
+   padding-left: 3px;
+   color: red;
+}
+
+.buttons {
+	text-align: center;
+	margin-top: 10px;
+}
+
+#search-results {
+   background-color: #E6E7E8;
+   clear: both;
+   width: 100%;
+}
+
+#search-results td {
+   padding: 4px;
+   font-size: 11px;
+}
+
+#search-results th {
+   font-weight: normal;
+   padding: 4px;
+}
+
+#search-results thead {
+
+   font-weight: bold;
+   color: #FFFFFF;
+   background-color: black;
+   text-align: left;
+}
+
+#search-results tfoot {
+   height: 20px;
+   font-weight: bold;
+   background-color: #EAECEE;
+   text-align: center;
+}
+
+#search-results tbody tr:nth-child(odd) {
+   background: #f4f3f3;
+}
+
+#search-results tbody tr:nth-child(even) {
+   background: #ffffff;
+}
+
+#search-results tbody tr:hover {
+   background: #d2e8f2;
+   cursor: pointer;
+}
+.logo {
+    float: left;
+    padding-left: 10px;
+}
+
+#view-fieldset label {	
+	display: block;
+    font-size: 16px;
+}
+
+#view-fieldset output {
+	display: block;
+	font-size: 1.25em;
+	padding-bottom: 10px;
+}
+p{
+	clear: both;
+	text-align: center;
+	color: #666666;
+	font-size: 0.85em;
+}
+#format{
+	clear: both;
+	text-align: center;
+	color: #666666;
+	font-size: 0.85em;
+}

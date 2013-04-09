@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Resource Base</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+		<script type="text/javascript" src="../resources/js/jquery-1.6.4.js"></script>
+		<script type="text/javascript" src="../resources/js/jquery.mobile-1.0.min.js"></script>
+		<script type="text/javascript" src="../resources/js/resourcebase-aerogear.js"></script>
+		<link rel="stylesheet" type="text/css" href="../resources/css/jquery.mobile-1.0.min.css"/>
+		<link rel="stylesheet" type="text/css" href="../resources/css/resourcebase-aerogear.css"/>
+	</head>
+	<body onload="aerogear.initialize('../rest/employee')">
+	<div id="container" >
+	<div class="logo">
+            <img src="../img/aerogear_logo_150px.png"/>
+        </div>
+        <section>
+	
+	  <aside id="info-aside" data-role="page" data-theme="a">
+		<article data-role="page">
+			<header data-role="header" data-theme="a">
+				<h3>Resource Info</h3>
+			</header>
+		<!-- Search -->
+		<article id="search-article" data-role="page">
+			<header data-role="header" data-theme="a">
+				<h3>Search Employee entities</h3>
+			</header>
+			<section data-role="content">
+				<form name="search-form" id="search-form" data-ajax="false">
+					<fieldset>
+						<div>
+							<label for="firstName">First Name:</label>
+							<input id="firstName" name="firstName" type="search"/>
+						</div>
+						<div>
+							<label for="lastName">Last Name:</label>
+							<input id="lastName" name="lastName" type="search"/>
+						</div>
+						<div data-role="controlgroup" data-type="horizontal" class="buttons">
+							<input type="submit" name="search" onclick="return aerogear.search()" data-icon="search" value="Search"/>
+						</div>
+					</fieldset>
+				</form>
+				<table id="search-results">
+					<thead>
+						<tr>
+							<th id="search-results-firstName">First Name</th>
+							<th id="search-results-lastName">Last Name</th>
+							<th id="search-results-dateOfBirth">Date Of Birth</th>
+							<th id="search-results-salary">Salary</th>
+							<th id="search-results-company">Company</th>
+						</tr>
+					</thead>
+					<tbody/>
+				</table>
+						
+			</section>
+			
+		</article> 
+		
+		<!-- Create -->
+		<article id="create-article" data-role="page">
+			<header data-role="header" data-theme="a">
+				<h3>Create Employee</h3>
+			</header>
+			<section data-role="content">
+				<form name="create-form" id="create-form" data-ajax="false">
+					<fieldset id="create-fieldset">
+						<div>
+							<label for="firstName">First Name:</label>
+							<input id="firstName" name="firstName" placeholder="Your First Name" type="text"/>
+						</div>
+						<div>
+							<label for="lastName">Last Name:</label>
+							<input id="lastName" name="lastName" placeholder="Your Last Name" type="text"/>
+						</div>
+						<div>
+							<label for="dateOfBirth">Date Of Birth:</label>
+							<input id="dateOfBirth" name="dateOfBirth" placeholder="Your Date Of Birth" type="date"/>
+							<label id="format" >Format:YYYY-MM-dd</label>
+						</div>
+						<div>
+							<label for="salary">Salary:</label>
+							<input id="salary" name="salary" placeholder="Your Salary" type="number"/>
+						</div>
+						<div id="formMsgs"></div>
+						<div data-role="controlgroup" data-type="horizontal" class="buttons">
+							<input type="submit" name="save" onclick="return aerogear.update()" data-icon="plus" value="Save"/>
+							<input type="submit" name="delete" onclick="return aerogear.remove()" data-icon="delete" value="Delete"/>
+										</div>
+					</fieldset>
+				</form>
+			</section>
+			<!-- 
+			<footer data-role="footer" data-position="fixed">
+				<div class="footer_left">
+					<a href="../index.html" data-role="button" data-icon="home">Home</a>
+				</div>
+				<div class="footer_right">
+					<a href="#search-article" data-role="button" data-icon="search">Search</a>
+				</div>
+			</footer>
+		-->
+		</article>
+		</article>
+		</aside>
+		</section>
+		
+		<footer>
+				 <p>This project was generated from a Maven archetype from JBoss.<br/></p>
+		</footer>
+		</div>
+	</body>
+</html>

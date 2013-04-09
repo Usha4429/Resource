@@ -1,0 +1,157 @@
+package com.test.rest;
+
+import java.io.IOException;
+import java.lang.reflect.Method;
+
+import javax.persistence.Entity;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.ws.rs.ext.ContextResolver;
+import javax.ws.rs.ext.Provider;
+
+import org.codehaus.jackson.JsonGenerator;
+import org.codehaus.jackson.JsonParser;
+import org.codehaus.jackson.JsonProcessingException;
+import org.codehaus.jackson.map.DeserializationConfig;
+import org.codehaus.jackson.map.DeserializationContext;
+import org.codehaus.jackson.map.JsonSerializer;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.SerializationConfig;
+import org.codehaus.jackson.map.SerializerProvider;
+import org.codehaus.jackson.map.deser.BeanDeserializer;
+import org.codehaus.jackson.map.deser.CustomDeserializerFactory;
+import org.codehaus.jackson.map.deser.StdDeserializerProvider;
+import org.codehaus.jackson.map.introspect.BasicBeanDescription;
+import org.codehaus.jackson.map.ser.BeanSerializer;
+import org.codehaus.jackson.map.ser.CustomSerializerFactory;
+import org.codehaus.jackson.type.JavaType;
+
+/**
+ * Custom JSON ObjectMapper that knows how to lookup JPA entities based on ids.
+ */
+
+@Provider
+public class ObjectMapperProvider implements ContextResolver<ObjectMapper> {
+	private final ObjectMapper mapper;
+
+	@PersistenceContext
+	private EntityManager entityManager;
+
+	public ObjectMapperProvider() {
+
+		this.mapper = new ObjectMapper();
+
+		// Serialize
+
+		CustomSerializerFactory serializer = new CustomSerializerFactory() {
+
+			@Override
+			protected JsonSerializer<Object> constructBeanSerializer(
+					SerializationConfig config, BasicBeanDescription beanDesc) {
+
+				BeanSerializer beanSerializer = (BeanSerializer) super
+						.constructBeanSerializer(config, beanDesc);
+				return new JpaSerializer(beanSerializer);
+			}
+		};
+		this.mapper.setSerializerFactory(serializer);
+
+		// Deserialize
+
+		this.mapper.setDeserializerProvider(new StdDeserializerProvider(
+				new CustomDeserializerFactory() {
+
+					protected BeanDeserializer constructBeanDeserializerInstance(
+							DeserializationConfig config, JavaType type,
+							BasicBeanDescription beanDesc) {
+
+						return new JpaDeserializer(type);
+					}
+				}));
+	}
+
+	@Override
+	public ObjectMapper getContext(Class<?> type) {
+		return this.mapper;
+	}
+
+	//
+	// Inner classes
+	//
+
+	private class JpaSerializer extends JsonSerializer<Object> {
+
+		private BeanSerializer delegate;
+
+		private Method serializeFields;
+
+		public JpaSerializer(BeanSerializer delegate) {
+			this.delegate = delegate;
+			try {
+				this.serializeFields = BeanSerializer.class.getDeclaredMethod(
+						"serializeFields", Object.class, JsonGenerator.class,
+						SerializerProvider.class);
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+			this.serializeFields.setAccessible(true);
+		}
+
+		@Override
+		public void serialize(Object value, JsonGenerator jgen,
+				SerializerProvider provider) throws IOException,
+				JsonProcessingException {
+
+			jgen.writeStartObject();
+
+			// Special support for toString...
+
+			provider.getKeySerializer().serialize("toString", jgen, provider);
+			provider.findTypedValueSerializer(String.class, true).serialize(
+					value.toString(), jgen, provider);
+
+			// ...then delegate
+
+			try {
+				this.serializeFields.invoke(this.delegate, value, jgen,
+						provider);
+			} catch (Exception e) {
+				throw new IOException(e);
+			}
+			jgen.writeEndObject();
+		}
+	}
+
+	private class JpaDeserializer extends BeanDeserializer {
+
+		public JpaDeserializer(JavaType type) {
+			super(type);
+		}
+
+		public Object deserializeFromString(JsonParser jp,
+				DeserializationContext ctxt) throws IOException,
+				JsonProcessingException {
+
+			// Special support for JPA entities...
+
+			if (this.getBeanClass().isAnnotationPresent(Entity.class)) {
+				return ObjectMapperProvider.this.entityManager.find(
+						this.getBeanClass(), Long.valueOf(jp.getText()));
+			}
+
+			// ...or delegate
+
+			return super.deserializeFromString(jp, ctxt);
+		}
+
+	    protected void handleUnknownProperty(JsonParser jp, DeserializationContext ctxt, Object beanOrClass, String propName)
+	            throws IOException, JsonProcessingException {
+	    	
+	    	if ( "toString".equals( propName )) {
+	    		return;
+	    	}
+	    	
+	    	super.handleUnknownProperty(jp, ctxt, beanOrClass, propName);
+	    }
+	}
+}
